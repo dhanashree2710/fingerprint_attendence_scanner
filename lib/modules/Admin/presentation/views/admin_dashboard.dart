@@ -1,3 +1,4 @@
+import 'package:fingerprint_authentication/modules/Admin/presentation/widgets/qr_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:fingerprint_authentication/modules/Students/presentation/views/student_registration.dart';
 
@@ -123,7 +124,17 @@ class AdminDashboard extends StatelessWidget {
               );
             },
           ),
-
+ListTile(
+            leading:const Icon(Icons.qr_code_scanner),
+            title: const Text("Scan Batch QR"),
+            onTap: () {
+              Navigator.pop(context);
+             Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const ScanQRScreen()),
+    );
+            },
+          ),
           const Spacer(),
 
           ListTile(

@@ -5,6 +5,8 @@
 
 
     <application
+        android:requestLegacyExternalStorage="true"
+    android:usesCleartextTraffic="true"
         android:label="fingerprint_authentication"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
