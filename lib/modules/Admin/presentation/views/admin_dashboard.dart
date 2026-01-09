@@ -1,4 +1,5 @@
 import 'package:fingerprint_authentication/modules/Admin/presentation/widgets/qr_scanner.dart';
+import 'package:fingerprint_authentication/modules/Attendence/presentation/views/view_attendence.dart';
 import 'package:flutter/material.dart';
 import 'package:fingerprint_authentication/modules/Students/presentation/views/student_registration.dart';
 
@@ -49,6 +50,12 @@ class AdminDashboard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const BatchListScreen()),
+            );
+          }),
+           _card(context, "Attendence", () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AttendanceListScreen()),
             );
           }),
         ],
@@ -132,6 +139,17 @@ ListTile(
              Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const ScanQRScreen()),
+    );
+            },
+          ),
+          ListTile(
+            leading:const Icon(Icons.calendar_month_outlined),
+            title: const Text("Attendence"),
+            onTap: () {
+              Navigator.pop(context);
+             Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AttendanceListScreen()),
     );
             },
           ),

@@ -11,6 +11,7 @@ class RegisterStudent extends StatefulWidget {
 class _RegisterStudentState extends State<RegisterStudent> {
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController rollNoCtrl = TextEditingController();
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController phoneCtrl = TextEditingController();
@@ -26,35 +27,27 @@ class _RegisterStudentState extends State<RegisterStudent> {
     fetchBatches();
   }
 
-Future<void> fetchBatches() async {
-  try {
-    final snapshot =
-        await FirebaseFirestore.instance.collection('batches').get();
+  /// 🔹 Fetch batches
+  Future<void> fetchBatches() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection('batches').get();
 
-    if (snapshot.docs.isEmpty) {
-      debugPrint("❌ No batches found");
+      final fetchedBatches = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return {
+          'id': doc.id,
+          'name': "${data['course_name']} - ${data['college_name']}",
+        };
+      }).toList();
+
+      setState(() {
+        batches = fetchedBatches;
+      });
+    } catch (e) {
+      debugPrint("❌ Error fetching batches: $e");
     }
-
-    final fetchedBatches = snapshot.docs.map((doc) {
-      final data = doc.data();
-
-      return {
-        'id': data['batch_id'] as String,
-        'name':
-            "${data['course_name']} - ${data['college_name']}",
-      };
-    }).toList();
-
-    setState(() {
-      batches = fetchedBatches;
-    });
-
-    debugPrint("✅ Batches loaded: ${batches.length}");
-  } catch (e) {
-    debugPrint("🔥 Error fetching batches: $e");
   }
-}
-
 
   /// 🔹 Register student
   Future<void> registerStudent() async {
@@ -71,6 +64,7 @@ Future<void> fetchBatches() async {
 
     await doc.set({
       'student_id': doc.id,
+      'roll_no': rollNoCtrl.text.trim(), // ✅ Roll No
       'name': nameCtrl.text.trim(),
       'email': emailCtrl.text.trim(),
       'phone': phoneCtrl.text.trim(),
@@ -81,10 +75,12 @@ Future<void> fetchBatches() async {
 
     setState(() => loading = false);
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text("Student registered successfully")));
-
-    Navigator.pop(context);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Student registered successfully")),
+      );
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -97,61 +93,105 @@ Future<void> fetchBatches() async {
           key: _formKey,
           child: Column(
             children: [
+              /// Roll No
+              TextFormField(
+                controller: rollNoCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: "Roll Number",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Required" : null,
+              ),
+              const SizedBox(height: 10),
+
+              /// Name
               TextFormField(
                 controller: nameCtrl,
-                decoration: const InputDecoration(hintText: "Name"),
-                validator: (v) => v == null || v.isEmpty ? "Required" : null,
+                decoration: const InputDecoration(
+                  hintText: "Name",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Required" : null,
               ),
               const SizedBox(height: 10),
+
+              /// Email
               TextFormField(
                 controller: emailCtrl,
-                decoration: const InputDecoration(hintText: "Email"),
-                validator: (v) => v == null || v.isEmpty ? "Required" : null,
+                decoration: const InputDecoration(
+                  hintText: "Email",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Required" : null,
               ),
               const SizedBox(height: 10),
+
+              /// Phone
               TextFormField(
                 controller: phoneCtrl,
-                decoration: const InputDecoration(hintText: "Phone Number"),
-                validator: (v) => v == null || v.isEmpty ? "Required" : null,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  hintText: "Phone Number",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Required" : null,
               ),
               const SizedBox(height: 10),
+
+              /// Address
               TextFormField(
                 controller: addressCtrl,
-                decoration: const InputDecoration(hintText: "Address"),
-                validator: (v) => v == null || v.isEmpty ? "Required" : null,
+                decoration: const InputDecoration(
+                  hintText: "Address",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Required" : null,
               ),
               const SizedBox(height: 10),
+
+              /// Batch Dropdown
               batches.isEmpty
                   ? const CircularProgressIndicator()
                   : DropdownButtonFormField<String>(
-  value: selectedBatch,
-  items: batches
-      .map(
-        (b) => DropdownMenuItem<String>(
-          value: b['id'] as String, // cast to String
-          child: Text(b['name'] as String), // cast to String
-        ),
-      )
-      .toList(),
-  onChanged: (val) {
-    setState(() {
-      selectedBatch = val;
-    });
-  },
-  decoration: const InputDecoration(
-    hintText: "Select Batch",
-    border: OutlineInputBorder(),
-    contentPadding: EdgeInsets.symmetric(horizontal: 12),
-  ),
-  validator: (v) => v == null ? "Required" : null,
-),
+                      value: selectedBatch,
+                      items: batches
+                          .map(
+                            (b) => DropdownMenuItem<String>(
+                              value: b['id'],
+                              child: Text(b['name']),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          selectedBatch = val;
+                        });
+                      },
+                      decoration: const InputDecoration(
+                        hintText: "Select Batch",
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (v) =>
+                          v == null ? "Required" : null,
+                    ),
 
               const SizedBox(height: 20),
+
+              /// Submit
               loading
                   ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: registerStudent,
-                      child: const Text("Register"),
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: registerStudent,
+                        child: const Text("Register Student"),
+                      ),
                     ),
             ],
           ),
