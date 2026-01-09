@@ -1,0 +1,48 @@
+name: fingerprint_authentication
+description: "A new Flutter project."
+
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  firebase_core: ^4.3.0
+  firebase_database: ^12.1.1
+  firebase_storage: ^13.0.5
+  firebase_auth: ^6.1.3
+  cloud_firestore: ^6.1.1
+  lottie: ^3.3.2
+  local_auth: 2.2.0
+  shared_preferences: ^2.5.4
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^3.5.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png"
+
+flutter:
+
+  
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/
+
+  

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "483392198456",
+    "project_id": "fingerprint-attendence-34b3d",
+    "storage_bucket": "fingerprint-attendence-34b3d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:483392198456:android:3625652ac19e9413c1d3cd",
+        "android_client_info": {
+          "package_name": "com.example.fingerprint_authentication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1feQ7d0dz0Eu6vNfWb9--Xj_BIilp9bs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
